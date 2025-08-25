@@ -89,7 +89,7 @@ npm run start
 Follow these steps to get the AI Agent running:
 
 ```bash
-python3 agent.py -m YOUR_MEETING_IDclea
+python3 agent.py -m YOUR_MEETING_ID
 ```
 
 

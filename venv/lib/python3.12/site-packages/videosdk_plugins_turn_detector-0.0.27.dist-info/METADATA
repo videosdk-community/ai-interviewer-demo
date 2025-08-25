@@ -1,0 +1,30 @@
+Metadata-Version: 2.4
+Name: videosdk-plugins-turn-detector
+Version: 0.0.27
+Summary: VideoSDK Agent Framework plugin for turnsense turn detector model
+Author: videosdk
+License-Expression: Apache-2.0
+Keywords: ai,audio,video,videosdk
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Communications :: Conferencing
+Classifier: Topic :: Multimedia :: Sound/Audio
+Classifier: Topic :: Multimedia :: Video
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Requires-Python: >=3.11
+Requires-Dist: jinja2
+Requires-Dist: numpy>=1.27
+Requires-Dist: onnxruntime>=1.18
+Requires-Dist: transformers>=4.47.1
+Requires-Dist: videosdk-agents>=0.0.27
+Description-Content-Type: text/markdown
+
+# VideoSDK Turn Detector Plugin
+
+Agent Framework plugin for Turn Detection.
+
+## Installation
+
+```bash
+pip install videosdk-plugins-turn-detector
+```

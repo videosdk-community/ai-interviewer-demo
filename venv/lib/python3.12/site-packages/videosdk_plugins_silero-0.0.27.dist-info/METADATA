@@ -1,0 +1,28 @@
+Metadata-Version: 2.4
+Name: videosdk-plugins-silero
+Version: 0.0.27
+Summary: VideoSDK Agent Framework plugin for silero
+Author: videosdk
+License-Expression: Apache-2.0
+Keywords: ai,audio,silero,video,videosdk
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Communications :: Conferencing
+Classifier: Topic :: Multimedia :: Sound/Audio
+Classifier: Topic :: Multimedia :: Video
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Requires-Python: >=3.11
+Requires-Dist: numpy>=1.27
+Requires-Dist: onnxruntime>=1.18
+Requires-Dist: videosdk-agents>=0.0.27
+Description-Content-Type: text/markdown
+
+# VideoSDK Silero Plugin
+
+Agent Framework plugin for Silero.
+
+## Installation
+
+```bash
+pip install videosdk-plugins-silero
+```

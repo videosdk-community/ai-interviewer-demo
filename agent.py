@@ -5,11 +5,15 @@ from pathlib import Path
 import sys
 import argparse
 from typing import AsyncIterator,Optional
-from videosdk.agents import Agent, AgentSession, CascadingPipeline, function_tool, MCPServerStdio, MCPServerHTTP, JobContext, RoomOptions, WorkerJob, ConversationFlow, ChatRole
+from videosdk.agents import Agent, AgentSession, Pipeline, function_tool, MCPServerStdio, MCPServerHTTP, JobContext, RoomOptions, WorkerJob
 from videosdk.plugins.google import GoogleLLM, GoogleTTS, GoogleSTT
 from videosdk.plugins.silero import SileroVAD
 from videosdk import PubSubPublishConfig, PubSubSubscribeConfig
 from videosdk.plugins.turn_detector import TurnDetector, pre_download_model
+
+import logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", handlers=[logging.StreamHandler()])
+
 # Pre-downloading the Turn Detector model
 pre_download_model()
 class MyVoiceAgent(Agent):
@@ -47,8 +51,7 @@ async def start_session(ctx: JobContext):
     vad = SileroVAD()
     turn_detector = TurnDetector(threshold=0.8)
     agent = MyVoiceAgent(ctx)
-    conversation_flow = ConversationFlow(agent)
-    pipeline = CascadingPipeline(
+    pipeline = Pipeline(
         stt=stt,
         llm=llm,
         tts=tts,
@@ -57,8 +60,7 @@ async def start_session(ctx: JobContext):
     )
     session = AgentSession(
         agent=agent,
-        pipeline=pipeline,
-        conversation_flow=conversation_flow
+        pipeline=pipeline
     )
     try:
         await ctx.connect()
@@ -67,11 +69,11 @@ async def start_session(ctx: JobContext):
     finally:
         await session.close()
         await ctx.shutdown()
-def make_context(meeting_id: Optional[str] = None) -> JobContext:
-    resolved_meeting_id = meeting_id or os.getenv("MEETING_ID") or "Meeting-id"
-    print("Using meeting ID:", resolved_meeting_id)
+def make_context(room_id: Optional[str] = None) -> JobContext:
+    resolved_room_id = room_id or os.getenv("ROOM_ID") or "<room_id>"
+    print("Using room ID:", resolved_room_id)
     room_options = RoomOptions(
-        room_id=resolved_meeting_id,
+        room_id=resolved_room_id,
         name="Cascading Agent",
         playground=False,
     )
@@ -82,18 +84,18 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Start the VideoSDK AI Interview Agent")
     parser.add_argument(
         "-m",
-        "--meeting-id",
-        dest="meeting_id",
-        help="Meeting ID to join/start the session (fallback: MEETING_ID env or 'Meeting-id')",
+        "--room-id",
+        dest="room_id",
+        help="Room ID to join/start the session (fallback: ROOM_ID env or '<room_id>')",
     )
     return parser.parse_args()
-# Module-level storage for CLI-provided meeting ID to ensure picklable jobctx
-CLI_MEETING_ID: Optional[str] = None
+# Module-level storage for CLI-provided room ID to ensure picklable jobctx
+CLI_ROOM_ID: Optional[str] = None
 
 
 if __name__ == "__main__":
     args = parse_args()
-    if args.meeting_id:
-        os.environ["MEETING_ID"] = args.meeting_id
+    if args.room_id:
+        os.environ["ROOM_ID"] = args.room_id
     job = WorkerJob(entrypoint=start_session, jobctx=make_context)
     job.start()
